@@ -1,4 +1,3 @@
-require 'pry'
 require 'set'
 diffs = DATA.readlines.map(&:to_i)
 
