@@ -1,3 +1,5 @@
+require 'set'
+
 ids = DATA.readlines.map(&:chomp)
 two = 0
 three = 0
@@ -9,11 +11,15 @@ end
 checksum = two * three
 puts "Part 1: #{checksum}"
 
-ids.product(ids) do |x, y|
-  same = x.chars.zip(y.chars).select { |a, b| a == b }.map(&:first)
-  if same.length == x.length - 1
-    puts "Part 2: #{same.join}"
-    break
+pairs = Set.new
+ids.each do |id|
+  (0...id.length).each do |i|
+    pair = [id[0...i], id[i+1..-1]]
+    if pairs.include? pair
+      puts "Part 2: #{pair.join}"
+      exit
+    end
+    pairs.add(pair)
   end
 end
 
