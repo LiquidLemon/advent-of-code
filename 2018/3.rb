@@ -1,40 +1,29 @@
-Point = Struct.new(:x, :y)
-
-Square = Struct.new(:id, :left, :top, :width, :height) do
-  def points
-    (left...left+width).map do |x|
-      (top...top+height).map do |y|
-        Point.new(x, y)
-      end
-    end.flatten
-  end
-
-  def inside(point)
-    point.x >= left && point.x < left+width &&
-      point.y >= top && point.y < top+height
-  end
-end
-
 squares = DATA.readlines.map do |line|
-  /#(?<id>\d+) @ (?<left>\d+),(?<top>\d+): (?<width>\d+)x(?<height>\d+)/ =~ line
-  Square.new(id, left.to_i, top.to_i, width.to_i, height.to_i)
-end
+  line.scan(/\d+/).map(&:to_i).freeze
+end.freeze
 
-claims = Hash.new(0)
-squares.each do |square|
-  square.points.each do |point|
-    claims[point] += 1
+claims = Hash.new { [] }
+squares.each do |id, left, top, width, height|
+  (left...left+width).each do |x|
+    (top...top+height).each do |y|
+      claims[x * 10_000 + y] <<= id
+    end
   end
 end
 
-multiple = claims.select { |_, count| count > 1 }
-puts "Part 1: #{multiple.size}"
+multiple = claims.count { |_, ids| ids.size > 1 }
+puts "Part 1: #{multiple}"
 
-no_overlap = squares.select do |square|
-  !multiple.keys.any? { |point| square.inside(point) }
+overlapping = [false] * squares.size
+claims.values.each do |ids|
+  ids.each do |id|
+    overlapping[id-1] = true if ids.size > 1
+  end
 end
 
-puts "Part 2: #{no_overlap.first.id}"
+untouched = overlapping.each_with_index.select { |v, _| !v }
+
+puts "Part 2: #{untouched.first[1] + 1}"
 
 __END__
 #1 @ 527,351: 24x10
@@ -1368,4 +1357,3 @@ __END__
 #1329 @ 233,342: 17x24
 #1330 @ 446,410: 17x24
 #1331 @ 308,708: 27x23
-
