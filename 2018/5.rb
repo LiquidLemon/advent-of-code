@@ -10,10 +10,10 @@ def reduce(polymer)
   end
 end
 
-puts reduce(input).length
+puts (reduced = reduce(input)).length
 
 min = ('a'..'z').map do |c|
-  reduce(input.delete(c + c.upcase)).length
+  reduce(reduced.delete(c + c.upcase)).length
 end.min
 puts min
 
