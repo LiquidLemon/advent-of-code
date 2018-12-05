@@ -1,40 +1,34 @@
 require 'pry'
 require 'set'
 
-input = DATA.readlines.map do |line|
+input = DATA.readlines.sort.map do |line|
   numbers = line.scan(/\d+/).map(&:to_i).freeze
-  date = numbers[0,5]
-  id = line.scan(/#(\d+)/)
-  [date, id.empty? ? line.scan(/(?:asleep|up)/)[0].freeze : id[0][0].to_i]
+  [numbers[4], numbers[5] || line.scan(/(?:asleep|up)/)[0]]
 end
-input.sort_by!(&:first)
 
-asleep = Hash.new
+asleep = Hash.new { |h, k| h[k] = [0] * 60 }
 
 id = nil
 start = 0
-input.each do |date, x|
+input.each do |minute, x|
   case x
   when Numeric
     id = x
   when 'asleep'
-    start = date.last
+    start = minute
   when 'up'
-    asleep[id] ||= [0] * 60
-    (start...date.last).each do |minute|
-      asleep[id][minute] += 1
+    (start...minute).each do |min|
+      asleep[id][min] += 1
     end
   end
 end
 
-guard = asleep.max_by { |_, hours| hours.sum }
-minute = guard[1].find_index(guard[1].max)
+%i[sum max].each.with_index(1) do |met, i|
+  guard, minutes = asleep.max_by { |_, hours| hours.send(met) }
+  minute = minutes.find_index(minutes.max)
+  puts "Part #{i}: #{guard * minute}"
+end
 
-puts "Part 1: #{guard[0] * minute}"
-
-guard = asleep.max_by { |_, hours| hours.max }
-minute = guard[1].find_index(guard[1].max)
-puts "Part 2: #{guard[0] * minute}"
 __END__
 [1518-08-21 00:39] wakes up
 [1518-08-11 00:56] wakes up
