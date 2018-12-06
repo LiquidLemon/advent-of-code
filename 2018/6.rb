@@ -1,27 +1,33 @@
 input = DATA.readlines.map { |l| l.split(', ').map(&:to_i) }
-min_x = input.map(&:first).min
-max_x = input.map(&:first).max
-min_y = input.map(&:last).min
-max_y = input.map(&:last).max
+min_x, max_x = input.map(&:first).minmax
+min_y, max_y = input.map(&:last).minmax
 
 areas = [0] * input.length
 close = 0
 
 (min_x..max_x).each do |x|
   (min_y..max_y).each do |y|
-    closest = input.each.with_index.map do |point, i|
+    closest = [Float::INFINITY, nil]
+
+    total = 0
+    input.each.with_index do |point, i|
       distance = (point[0] - x).abs + (point[1] - y).abs
-      [distance, i]
-    end.sort
+      total += distance
+      if distance < closest.first
+        closest = [distance, i]
+      elsif closest.first == distance
+        closest[1] = nil
+      end
+    end
 
-    close += 1 if closest.sum(&:first) < 10_000
+    close += 1 if total < 10_000
 
-    next if closest[0].first == closest[1].first
+    next unless closest.last
 
-    if [min_x, max_x].include?(x) || [min_y, max_y].include?(y)
-      areas[closest[0].last] = -Float::INFINITY
+    if x == min_x || x == max_x || y == min_y || y == max_y
+      areas[closest.last] = -Float::INFINITY
     else
-      areas[closest[0].last] += 1
+      areas[closest.last] += 1
     end
   end
 end
