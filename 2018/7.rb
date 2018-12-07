@@ -17,12 +17,13 @@ end
 
 order = []
 
-available = steps.keys.reject { |step| dependent.include? step }.sort
+available = steps.keys.reject { |step| dependent.include? step }.to_set
 
 blocks = BLOCKS.dup
 
 while !available.empty?
-  name = available.shift
+  name = available.min
+  available.delete(name)
 
   order << name
   steps[name].each do |nxt|
@@ -32,15 +33,14 @@ while !available.empty?
       blocks[nxt] -= 1
     end
   end
-  available.sort!
 end
 
 puts "Part 1: #{order.join}"
 
 time_spent = 0
 
-queue = steps.keys.reject { |step| dependent.include? step }.sort
-workers = []
+queue = steps.keys.reject { |step| dependent.include? step }.to_set
+tasks = Set.new
 
 WORKERS = 5
 BASE_TIME = 60
@@ -48,30 +48,30 @@ BASE_TIME = 60
 blocks = BLOCKS.dup
 
 queued = Set.new
-while !queue.empty? || !workers.empty?
-  while workers.length < WORKERS && !queue.empty?
-    task = queue.shift
-    workers << [task.ord - ?A.ord + BASE_TIME + 1, task]
+while !queue.empty? || !tasks.empty?
+  while tasks.length < WORKERS && !queue.empty?
+    task = queue.min
+    queue.delete(task)
+    tasks << [task.ord - ?A.ord + BASE_TIME + 1, task]
     queued << task
   end
 
-  unless workers.empty?
-    workers.sort!
-    forward = workers[0][0]
+  unless tasks.empty?
+    forward = tasks.min[0]
     time_spent += forward
-    workers.map! { |time, task| [time - forward, task] }
+    tasks.map! { |time, task| [time - forward, task] }
   end
 
-  while !workers.empty? && workers[0][0] <= 0
-    _, name = workers.shift
-    steps[name].each do |nxt|
+  while !tasks.empty? && tasks.min[0] <= 0
+    task = tasks.min
+    tasks.delete(task)
+    steps[task[1]].each do |nxt|
       blocks[nxt] -= 1
       if blocks[nxt] == 0 && !queued.include?(nxt)
         queue << nxt
       end
     end
   end
-  queue.sort!
 end
 
 puts "Part 2: #{time_spent}"
