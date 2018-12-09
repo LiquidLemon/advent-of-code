@@ -39,16 +39,6 @@ class Node
     self.next.prev = self.prev
     value
   end
-
-  def puts
-    print "#{value} "
-    it = self.next
-    while it != self
-      print "#{it.value} "
-      it = it.next
-    end
-    print "\n"
-  end
 end
 
 def run(players, last)
