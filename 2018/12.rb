@@ -2,8 +2,9 @@ require 'set'
 
 def simulate(initial, rules, generations)
   pots = initial.dup
-  last_sum = nil
-  diffs = [0]
+
+  sum = nil
+  shapes = Set.new
   generations.times do |gen|
     new_pots = Hash.new(false)
     first, last = pots.keys.minmax
@@ -12,16 +13,21 @@ def simulate(initial, rules, generations)
       new_pots[i] = rules[pattern]
     end
     pots = new_pots
-    sum = pots.select { |_, plant| plant }.keys.sum
+    new_sum = pots.select { |_, plant| plant }.keys.sum
 
-    if last_sum
-      diffs << sum - last_sum
-      if diffs.length > 2 && diffs[-3..-1].uniq.length == 1
-        return sum + (generations - gen - 1) * diffs.last
-      end
+    min = nil
+    shape = pots
+      .select { |_, plant| plant }
+      .keys
+      .tap { |keys| min = keys.min }
+      .map { |key| key - min }
+
+    if shapes.include?(shape)
+      return sum + (generations - gen) * (new_sum - sum)
     end
 
-    last_sum = sum
+    shapes << shape
+    sum = new_sum
   end
   pots.select { |_, plant| plant }.keys.sum
 end
