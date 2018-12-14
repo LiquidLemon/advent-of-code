@@ -1,5 +1,5 @@
 digits = nil
-input = (ARGV[0] || DATA.read).tap { |s| digits = s.chars }.to_i
+input = (ARGV[0] || DATA.read.chomp).tap { |s| digits = s.chars.map(&:to_i) }.to_i
 
 def step
   scoreboard = [3, 7]
@@ -16,17 +16,14 @@ def step
   end
 end
 
+start = nil
+len = 0
 step do |board|
   if board.size == input + 10
     recipes = board[input, 10].map(&:to_s).join
     puts "Part 1: #{recipes}"
-    break
   end
-end
 
-start = nil
-len = 0
-step do |board|
   if board.last == digits[len]
     len += 1
     start = board.size - 1 if start.nil?
