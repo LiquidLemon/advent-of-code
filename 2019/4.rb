@@ -1,13 +1,19 @@
 def is_password(combination)
   digits = combination.digits
-  return false if digits.length == digits.chunk(&:itself).to_a.length
-  digits[0..-2].zip(digits.drop(1)).all? { |x, y| x >= y }
+  return false unless digits.each_cons(2).any? { |x, y| x == y }
+  digits.each_cons(2).all? { |x, y| x >= y }
 end
 
 def is_actual_password(combination)
   digits = combination.digits
-  return false unless digits.chunk(&:itself).map(&:last).map(&:length).any?(2)
-  digits[0..-2].zip(digits.drop(1)).all? { |x, y| x >= y }
+
+  unless (digits[0] == digits[1] && digits[1] != digits[2]) ||
+         (digits[-1] == digits[-2] && digits[-2] != digits[-3]) ||
+         digits.each_cons(4).any? { |a, b, c, d| b == c && a != b && c != d }
+    return false
+  end
+
+  digits.each_cons(2).all? { |x, y| x >= y }
 end
 
 low, high = DATA.read.split(?-).map(&:to_i)
