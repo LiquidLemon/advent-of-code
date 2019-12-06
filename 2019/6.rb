@@ -15,12 +15,12 @@ count_orbits = ->(start='COM', depth=0) {
 
 puts "Part 1: #{count_orbits.call}"
 
-distance_to = ->(target, start='COM') {
+path_to = ->(target, start='COM') {
   return [start] if start == target
   return nil unless orbits[start]
 
   path = orbits[start]
-    .map { |orbiter| distance_to.(target, orbiter) }
+    .map { |orbiter| path_to.(target, orbiter) }
     .select(&:itself)
     .min_by(&:length)
 
@@ -29,8 +29,8 @@ distance_to = ->(target, start='COM') {
   path << start
 }
 
-you = distance_to.('YOU').reverse
-san = distance_to.('SAN').reverse
+you = path_to.('YOU').reverse
+san = path_to.('SAN').reverse
 
 common_length = you.take_while.with_index { |x, i| san[i] == x }.length
 
