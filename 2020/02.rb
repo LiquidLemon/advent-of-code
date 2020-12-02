@@ -1,6 +1,11 @@
-data = DATA.each_line.map { |x| x.match(/(?<min>\d+)-(?<max>\d+) (?<char>\w): (?<pass>\w+)/) }
-puts data.count { |x| (x[:min].to_i .. x[:max].to_i).include?(x[:pass].count(x[:char])) }
-puts data.count { |x| (x[:pass][x[:min].to_i - 1] == x[:char]) ^ (x[:pass][x[:max].to_i - 1] == x[:char])}
+data = DATA.each_line.map { |line|
+  range, char, pass = line.split
+  min, max = range.split(?-).map(&:to_i)
+  [min, max, char[0], pass]
+}
+
+puts data.count { |min, max, char, pass| (min..max).include?(pass.count(char)) }
+puts data.count { |min, max, char, pass| (pass[min - 1] == char) ^ (pass[max - 1] == char) }
 
 __END__
 2-6 c: fcpwjqhcgtffzlbj
