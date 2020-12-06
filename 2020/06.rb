@@ -1,6 +1,4 @@
-require 'set'
-
-data = DATA.read.split("\n\n").map { |g| g.split("\n").map { |x| x.chars.to_set } }
+data = DATA.read.split("\n\n").map { |g| g.split("\n").map { |x| x.chars } }
 
 puts data.sum { |g| g.reduce(&:|).size }
 puts data.sum { |g| g.reduce(&:&).size }
