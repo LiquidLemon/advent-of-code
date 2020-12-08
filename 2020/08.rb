@@ -38,9 +38,8 @@ potential_errors = code
   .each_with_index
   .filter { |(op, _), _| op == :jmp || op == :nop }
 
-potential_errors.each { |_, i|
+potential_errors.each { |(op, arg), i|
   copy = code.dup
-  op, arg = copy[i]
   copy[i] = op == :jmp ? [:nop, arg] : [:jmp, arg]
   acc, success = run(copy)
   if success
