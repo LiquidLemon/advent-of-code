@@ -6,13 +6,6 @@ diffs = sorted[1..].zip(sorted[...-1]).map { |a, b| a - b }
 
 puts diffs.count(1) * (diffs.count(3) + 1)
 
-count = 1
-sorted[1...-1].each.with_index(1) do |x, i|
-  if sorted[i+1] - sorted[i-1] <= 3
-    count *= 2
-  end
-end
-
 # This is "smart" but relies a lot on the specific properties of the data.
 # I couldn't find a way to solve this properly so this will have to do for now.
 factors = [1, 2, 4, 7]
