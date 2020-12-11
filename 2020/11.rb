@@ -1,4 +1,4 @@
-data = DATA.each_line.map { |l| l.chomp.chars }
+data = DATA.each_line.map { |l| l.chomp.chars.map(&:to_sym) }
 
 DIRS = [
   [-1, -1],
@@ -12,12 +12,14 @@ DIRS = [
 ].freeze
 
 def count_adjacent(grid, x, y)
-  ys = 0...grid.size
-  xs = 0...grid[0].size
+  width = grid.size
+  height = grid[0].size
   DIRS.count { |a, b|
-      ys.include?(y+b) &&
-        xs.include?(x+a) &&
-        grid[y+b][x+a] == ?#
+    y_ = y + b
+    x_ = x + a
+    x_ >= 0 && x_ < width &&
+      y_ >= 0 && y_ < height &&
+      grid[y+b][x+a] == :'#'
     }
 end
 
@@ -25,10 +27,10 @@ def step(grid)
   new = grid.map(&:dup)
   grid.each_with_index do |row, y|
     row.each_with_index do |cell, x|
-      if cell == ?L && count_adjacent(grid, x, y) == 0
-          new[y][x] = ?#
-      elsif cell == ?# && count_adjacent(grid, x, y) >= 4
-        new[y][x] = ?L
+      if cell == :L && count_adjacent(grid, x, y) == 0
+          new[y][x] = :'#'
+      elsif cell == :'#' && count_adjacent(grid, x, y) >= 4
+        new[y][x] = :L
       end
     end
   end
@@ -44,11 +46,11 @@ loop do
   grid = new
 end
 
-puts grid.flatten.count(?#)
+puts grid.flatten.count(:'#')
 
 def count_visible(grid, x, y)
-  xs = 0...grid[0].size
-  ys = 0...grid.size
+  width = grid.size
+  height = grid[0].size
   [
     [-1, -1],
     [0, -1],
@@ -62,10 +64,10 @@ def count_visible(grid, x, y)
     .count { |a, b|
       x_ = x + a
       y_ = y + b
-      while xs.include?(x_) and ys.include?(y_)
-        if grid[y_][x_] == ?#
+      while x_ >= 0 && x_ < width && y_ >= 0 && y_ < height
+        if grid[y_][x_] == :'#'
           break true
-        elsif grid[y_][x_] == ?L
+        elsif grid[y_][x_] == :L
           break false
         end
         x_ += a
@@ -78,10 +80,10 @@ def step2(grid)
   new = grid.map(&:dup)
   grid.each_with_index do |row, y|
     row.each_with_index do |cell, x|
-      if cell == ?L && count_visible(grid, x, y) == 0
-          new[y][x] = ?#
-      elsif cell == ?# && count_visible(grid, x, y) >= 5
-        new[y][x] = ?L
+      if cell == :L && count_visible(grid, x, y) == 0
+          new[y][x] = :'#'
+      elsif cell == :'#' && count_visible(grid, x, y) >= 5
+        new[y][x] = :L
       end
     end
   end
@@ -97,7 +99,8 @@ loop do
   grid = new
 end
 
-puts grid.flatten.count(?#)
+puts grid.flatten.count(:'#')
+
 __END__
 LLLLL.LLLLLLLLLLLLLLLLLLLLLLLLLL.LLLLLLL.LLLLLLLLLL.LLLLLLLLLLL.LLLLLLLLLLLLLL.LLLL.LLLL.LLLLLL
 LLLLL.LLLLLLLLLLLLLLLL.LLLLL.LLL.LLLLLLL.LLLLL.LLLL.LLLL.LLLLLLLLLLLLLLLL.LLLL.LLLL.LLLL.LLLLLL
