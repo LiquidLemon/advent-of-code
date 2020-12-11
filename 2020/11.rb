@@ -1,19 +1,20 @@
 data = DATA.each_line.map { |l| l.chomp.chars }
 
+DIRS = [
+  [-1, -1],
+  [0, -1],
+  [1, -1],
+  [-1, 0],
+  [1, 0],
+  [-1, 1],
+  [0, 1],
+  [1, 1]
+].freeze
+
 def count_adjacent(grid, x, y)
   ys = 0...grid.size
   xs = 0...grid[0].size
-  [
-    [-1, -1],
-    [0, -1],
-    [1, -1],
-    [-1, 0],
-    [1, 0],
-    [-1, 1],
-    [0, 1],
-    [1, 1]
-  ]
-    .count { |a, b|
+  DIRS.count { |a, b|
       ys.include?(y+b) &&
         xs.include?(x+a) &&
         grid[y+b][x+a] == ?#
