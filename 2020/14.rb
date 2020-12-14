@@ -12,7 +12,7 @@ data = DATA.each_line.map { |l|
 }
 
 memory = Hash.new(0)
-mask = (?1 * 36).to_i(2)
+mask = 2 ** 36 - 1
 bits = 0
 
 data.each { |op, *args|
@@ -46,7 +46,7 @@ def addresses(mask, bits)
 end
 
 memory = Hash.new(0)
-mask = (?1 * 36).to_i(2)
+mask = 2 ** 36 - 1
 bits = 0
 
 data.each { |op, *args|
