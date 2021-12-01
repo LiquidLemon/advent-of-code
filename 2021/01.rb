@@ -1,7 +1,7 @@
 input = DATA.readlines.map(&:to_i)
 
-puts input.each_cons(2).count { |a, b| b > a }
-puts input.each_cons(3).map(&:sum).each_cons(2).count { |a, b| b > a }
+puts input.each_cons(2).count { |a, b| a < b }
+puts input.each_cons(3).map(&:sum).each_cons(2).count { |a, b| a < b }
 
 __END__
 150
