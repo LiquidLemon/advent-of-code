@@ -36,9 +36,9 @@ puts [:==, :!=].map { |op|
       count += number[i]
     }
 
-    threshold = count / (candidates.size / 2)
+    most_common = count / (candidates.size / 2)
     candidates.reject! { |number|
-      number[i].send(op, threshold)
+      number[i].send(op, most_common)
     }
 
     i += 1
