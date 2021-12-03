@@ -20,6 +20,8 @@ counts.each { |k, v|
 
 puts gamma * epsilon
 
+# part 2
+
 require 'set'
 
 puts [:==, :!=].map { |op|
@@ -33,9 +35,11 @@ puts [:==, :!=].map { |op|
       count += number[i]
     }
 
+    threshold = count / (candidates.size / 2)
     candidates.reject! { |number|
-      number[i].send(op, count / (candidates.size / 2))
+      number[i].send(op, threshold)
     }
+
     i += 1
   end
 
