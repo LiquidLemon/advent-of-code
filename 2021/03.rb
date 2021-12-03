@@ -11,7 +11,8 @@ gamma = 0
 epsilon = 0
 
 counts.each { |k, v|
-  if v > input.length/2
+  # If the count is below length / 2 then 0 was most common, otherwise 1
+  if v > input.length / 2
     gamma += 2 ** k
   else
     epsilon += 2 ** k
