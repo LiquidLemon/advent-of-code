@@ -17,18 +17,30 @@ while boards.size > 0
   score = numbers.each { |n|
     picked << n
     winner = boards.find { |board|
-      rows = board.each_slice(5).to_a
-      rows.any? { |row| row.all? { |n| picked.include?(n) } } ||
-        rows.transpose.any? { |row| row.all? { |n| picked.include?(n) } }
+      (0..4).any? { |x|
+        row_win = true
+        column_win = true
+
+        (0..4).each { |y|
+          row_win &&= picked.include?(board[x + y * 5])
+          column_win &&= picked.include?(board[y + x * 5])
+          break unless row_win || column_win
+        }
+
+        row_win || column_win
+      }
     }
 
     if !winner.nil?
       boards.delete(winner)
-      break winner.filter { |n| !picked.include?(n) }.sum * n
+      if scores.empty? || boards.empty?
+        break winner.filter { |n| !picked.include?(n) }.sum * n
+      end
+      break
     end
   }
 
-  scores << score
+  scores << score unless score.nil?
 end
 
 puts scores.first, scores.last
