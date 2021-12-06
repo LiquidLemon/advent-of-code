@@ -1,9 +1,8 @@
 input = DATA.read.split(?,).map(&:to_i).freeze
 
 puts [80, 256].map { |i|
-  groups = input.group_by(&:itself).map { |i, g| [i, g.size] }.to_h
-  groups.default = 0
-  generations = (0..8).map { |i| groups[i] }
+  groups = input.tally
+  generations = (0..8).map { |i| groups[i] || 0 }
 
   i.times {
     n = generations.shift
