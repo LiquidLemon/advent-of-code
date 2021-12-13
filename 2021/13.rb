@@ -1,6 +1,5 @@
 require 'set'
 
-raw_dots, raw_folds = test.split("\n\n")
 raw_dots, raw_folds = DATA.read.split("\n\n")
 dots = raw_dots.lines(chomp: true).map { |line| line.split(?,).map(&:to_i).freeze }.to_set.freeze
 folds = raw_folds.lines(chomp: true).map { |line|
@@ -39,7 +38,7 @@ def print_dots(dots)
 
   ys.each { |y|
     puts xs.map { |x|
-      dots.include?([x, y]) ? '#' : '.'
+      dots.include?([x, y]) ? '█' : ' '
     }.join
   }
 end
