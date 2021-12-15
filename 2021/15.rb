@@ -49,12 +49,10 @@ def cheapest_path(graph, cost, source, target)
   end
 
   path = []
-  path_cost = 0
   u = target
 
   if !prev[u].nil? || u == source
     while !u.nil?
-      path_cost += cost[*u]
       path.unshift(u)
       u = prev[u]
     end
@@ -62,9 +60,7 @@ def cheapest_path(graph, cost, source, target)
     return nil
   end
 
-  path_cost -= cost[*source]
-
-  [path, path_cost]
+  [path, dist[target]]
 end
 
 input = DATA.readlines(chomp: true).map { |line| line.each_char.map(&:to_i).freeze }.freeze
