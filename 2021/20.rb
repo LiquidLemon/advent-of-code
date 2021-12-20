@@ -47,20 +47,6 @@ def enhance(image, lookup, bg=false)
   [new_image, lookup[bg ? -1 : 0]]
 end
 
-def print_image(image, bg=false)
-  min_x, max_x = image.keys.map(&:first).minmax
-  min_y, max_y = image.keys.map(&:last).minmax
-
-
-  (min_y-1..max_y+1).each { |y|
-    (min_x-1..max_x+1).each { |x|
-      print(image[[x, y]] ? "#" : ".")
-    }
-
-    puts
-  }
-end
-
 enhanced = image
 bg = false
 
