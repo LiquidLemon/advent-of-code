@@ -1,6 +1,5 @@
 input = DATA.readlines(&:chomp).map { |line|
-  connections, display = line.split(?|)
-  [connections.split, display.split]
+  line.split(?|).map(&:split)
 }
 
 puts input.sum { |_, display|
@@ -9,17 +8,26 @@ puts input.sum { |_, display|
   }
 }
 
+def bits(str)
+  str
+    .chars
+    .map { |c| c.ord - "a".ord }
+    .reduce(0) { |acc, x|
+      acc | (1 << x)
+    }
+end
+
 DIGITS = {
-  0 => "abcefg",
-  1 => "cf",
-  2 => "acdeg",
-  3 => "acdfg",
-  4 => "bcdf",
-  5 => "abdfg",
-  6 => "abdefg",
-  7 => "acf",
-  8 => "abcdefg",
-  9 => "abcdfg",
+  0 => bits("abcefg"),
+  1 => bits("cf"),
+  2 => bits("acdeg"),
+  3 => bits("acdfg"),
+  4 => bits("bcdf"),
+  5 => bits("abdfg"),
+  6 => bits("abdefg"),
+  7 => bits("acf"),
+  8 => bits("abcdefg"),
+  9 => bits("abcdfg"),
 }.invert
 
 LETTERS = [*?a..?g]

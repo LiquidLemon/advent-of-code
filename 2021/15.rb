@@ -25,24 +25,35 @@ def build_graph(width, height)
   graph
 end
 
+def heuristic(source, target)
+  (source[0] - target[0]).abs + (source[1] - target[1]).abs
+end
+
 def cheapest_path(graph, cost, source, target)
-  q = Set[source]
+  open = Set[source]
+  visited = Set.new
   dist = Hash.new(Float::INFINITY)
+  f_score = Hash.new(Float::INFINITY)
   prev = Hash.new
 
   dist[source] = 0
+  f_score[source] = 0
 
-  while !q.empty?
-    u = q.min_by { |v| dist[v] }
-    q.delete(u)
+  while !open.empty?
+    u = open.min_by { |v| f_score[v] }
+    visited << u
+    open.delete(u)
 
     break if u == target
 
     graph[u].each { |v|
+      next if visited.include?(v)
+
       alt = dist[u] + cost[*v]
       if alt < dist[v]
         dist[v] = alt
-        q << v
+        f_score[v] = alt + heuristic(v, target)
+        open << v
         prev[v] = u
       end
     }
