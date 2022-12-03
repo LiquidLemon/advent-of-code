@@ -1,10 +1,6 @@
-input = DATA
-  .readlines
-  .map { |l|
-    l.chomp.chars.map {
-      _1 >= ?a ? _1.ord - ?a.ord + 1 : _1.ord - ?A.ord + 27
-    }
-  }
+priority = [*?a..?z, *?A..?Z].map.with_index { [_1, _2 + 1] }.to_h
+
+input = DATA.readlines.map { |l| l.chomp.chars.map(&priority) }
 
 p input.sum { |sack|
   fst = sack[...sack.length/2]
