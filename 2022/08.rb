@@ -1,10 +1,3 @@
-input = "30373
-25512
-65332
-33549
-35390
-".lines(chomp: true).map { |l| l.chars.map(&:to_i) }
-
 input = DATA.readlines(chomp: true).map { |l| l.chars.map(&:to_i) }
 
 def find_visible(grid)
