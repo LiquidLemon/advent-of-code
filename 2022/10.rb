@@ -16,17 +16,17 @@ def simulate(input)
   crt = Array.new(240) { "." }
 
   reg = 1
-  counter = 0
+  cycle = 0
 
   program.each { |op, arg|
-    if (reg-1..reg+1).include?(counter % 40)
-      crt[counter] = "#"
+    if (reg-1..reg+1).include?(cycle % 40)
+      crt[cycle] = "#"
     end
 
-    counter += 1
+    cycle += 1
 
-    if counter % 40 == 20
-      sig_strength += counter * reg
+    if cycle % 40 == 20
+      sig_strength += cycle * reg
     end
 
     if op == "addx"

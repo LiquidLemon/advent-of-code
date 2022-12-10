@@ -1,6 +1,6 @@
 input = DATA.readlines(chomp: true)
 
-read_tree = ->(session) {
+def read_tree(session)
   tree = {"/" => {}}
   path = ["/"]
 
@@ -32,39 +32,51 @@ read_tree = ->(session) {
   }
 
   tree
-}
+end
 
-tree = read_tree[input]
+def walk_dirs(dir)
+  def traverse(node)
+    return unless node.is_a? Hash
 
-walk_dirs = ->(dir, &blk) {
-  blk[dir]
-  dir.values.filter { _1.is_a?(Hash) }.each { |child|
-    walk_dirs[child, &blk]
+    yield node
+    node.values.each { |child|
+      traverse(child) { |x|
+        yield x
+      }
+    }
+  end
+
+  Enumerator.new { |y|
+    traverse(dir) { y << _1 }
   }
-}
+end
 
-disk_usage = ->(dir) {
-  dir.values.sum { |entry|
-    entry.is_a?(Hash) ? disk_usage[entry] : entry
+def disk_usage(file)
+  return file unless file.is_a? Hash
+
+  file.values.sum { |entry|
+    entry.is_a?(Hash) ? disk_usage(entry) : entry
   }
-}
+end
+
+tree = read_tree(input)
 
 capacity = 70000000
 target_free = 30000000
-free = capacity - disk_usage[tree]
+free = capacity - disk_usage(tree)
 to_delete = target_free - free
 
 smallest_delete = Float::INFINITY
 total = 0
 
-walk_dirs[tree[?/]] { |dir|
-  size = disk_usage[dir]
-  total += size if size <= 100_000
-  smallest_delete = size if size >= to_delete && size < smallest_delete
+puts walk_dirs(tree[?/]).reduce([0, Float::INFINITY]) { |(small_total, delete_size), dir|
+  size = disk_usage(dir)
+  small_total += size if size <= 100_000
+  delete_size = size if (to_delete..smallest_delete).include? size
+
+  [small_total, delete_size]
 }
 
-p total
-p smallest_delete
 
 __END__
 $ cd /

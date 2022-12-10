@@ -8,6 +8,19 @@ input[0].lines(chomp: true)[...-1].map { |line|
   }
 }
 
+p input_stacks
+
+alt_lines = input[0].lines(chomp: true)[...-1]
+line_len = alt_lines.map(&:length).max
+alt_stacks = alt_lines
+  .map { _1.ljust(line_len).chars }
+  .transpose
+  .each_slice(4)
+  .map { |column|
+    column[1].filter { _1 != " " }.reverse
+  }
+p alt_stacks == input_stacks
+
 moves = input[1].lines(chomp: true).map { |line|
   parts = line.split
   [parts[1], parts[3], parts[5]].map(&:to_i)
