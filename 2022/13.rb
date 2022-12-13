@@ -28,7 +28,7 @@ p input.map.with_index(1).filter { |pair, i|
 }.map(&:last).sum
 
 dividers = [ [[2]], [[6]] ]
-all_pairs = input.flat_map(&:itself) + dividers
+all_pairs = input.flatten(1) + dividers
 sorted = all_pairs.sort(&method(:compare))
 
 p dividers.map { |x|
